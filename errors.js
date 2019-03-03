@@ -16,4 +16,8 @@ class MissingValue extends Error {
     this.name = "MissingValue";
   }
 }
-module.exports = {UnbalancedParentheses, OperatorMismatch, MissingValue}
+module.exports = {
+  UnbalancedParentheses,
+  OperatorMismatch,
+  MissingValue
+}

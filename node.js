@@ -15,8 +15,7 @@ module.exports = class Node {
       this.left = left;
       this.right = right;
       this.hasNegative = hasNegative;
-    }
-    else if (nodeObj) {
+    } else if (nodeObj) {
 
       // Try loading operator
       if (!("operator" in nodeObj)) {
@@ -68,10 +67,12 @@ module.exports = class Node {
     let left = "" + this.getLeft();
     let right = "" + this.getRight();
 
-    if (this.getLeft() instanceof Node && !this.getLeft().hasNegative()) {
+    if (this.getLeft() instanceof Node && !this.getLeft()
+      .hasNegative()) {
       left = "(" + left + ")";
     }
-    if (this.getRight() instanceof Node && !this.getRight().hasNegative()) {
+    if (this.getRight() instanceof Node && !this.getRight()
+      .hasNegative()) {
       right = "(" + right + ")";
     }
 
@@ -90,8 +91,10 @@ module.exports = class Node {
     }
 
     return (
-      this.getLeft().compare(valuthis.getLeft()) &&
-      this.getRight().compare(valuthis.getRight()) &&
+      this.getLeft()
+      .compare(valuthis.getLeft()) &&
+      this.getRight()
+      .compare(valuthis.getRight()) &&
       this.getHasNegative() == valuthis.getHasNegative()
     );
   }
