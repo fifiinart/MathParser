@@ -141,47 +141,55 @@ module.exports = class Node {
 
   evaluate() {
     if (this.left instanceof Node) {
-      this.left = this.left.evaluate();
+      this.left = new Float(this.left.evaluate()
+        .value);
     }
     if (this.right instanceof Node) {
-      this.right = this.right.evaluate();
+      this.right = new Float(this.right.evaluate()
+        .value);
     }
     let left = this.left;
     let right = this.right;
+    let value;
     /*************/
     switch (this.getOperator()) {
       case '^':
         if (this.hasNegative) {
-          return -(left ** right);
+          value = -(left ** right);
         }
-        return left ** right;
+        value = left ** right;
         break;
       case '/':
         if (this.hasNegative) {
-          return -(left / right);
+          value = -(left / right);
         }
-        return left / right;
+        value = left / right;
         break;
       case '*':
         if (this.hasNegative) {
-          return -(left * right);
+          value = -(left * right);
         }
-        return left * right;
+        value = left * right;
         break;
       case '-':
         if (this.hasNegative) {
-          return -(left - right);
+          value = -(left - right);
         }
-        return left - right;
+        value = left - right;
         break;
       case '+':
         if (this.hasNegative) {
-          return -(left + right);
+          value = -(left + right);
         }
-        return left + right;
+        value = left + right;
         break;
       default:
         throw new errors.operatorMismatch("Operators are invalid");
     }
+    return {
+      expression: this + "",
+      node: this,
+      value
+    };
   }
 }
