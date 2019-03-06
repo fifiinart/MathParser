@@ -61,6 +61,25 @@ module.exports = class Node {
         this.right = new Node(this.right);
       }
     }
+
+    // Get 3-O Level
+    switch (this.operator) {
+      case '+':
+        this.level = 0;
+        break;
+      case '-':
+        this.level = 0;
+        break;
+      case '*':
+        this.level = 1;
+        break;
+      case '/':
+        this.level = 1;
+        break;
+      case '^':
+        this.level = 2;
+        break;
+    }
   }
 
   toString() {
@@ -138,7 +157,6 @@ module.exports = class Node {
       }
     }
   }
-
   evaluate() {
     if (this.left instanceof Node) {
       this.left = new Float(this.left.evaluate()
