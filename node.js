@@ -57,6 +57,13 @@ class Node {
   get right() {
     return this._right;
   }
+  toString() {
+    if (this._hasNegative) {
+      return `-(${this._left} ${this._operator} ${this._right})`;
+    } else {
+      return `(${this._left} ${this._operator} ${this._right})`;
+    }
+  }
   eval() {
     let left, right, operator = this._operator,
       val;
