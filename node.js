@@ -1,213 +1,48 @@
-let errors = require("./errors.js");
-const Float = require("./float.js");
-const globals = require('./globals.js')
-module.exports = class Node {
-  constructor(nodeObj = null, operator = null, left = null, right = null, hasNegative = false) {
-    [this.pow, this.div, this.mult, this.sub, this.add] = globals.range(0, 5);
-    this.operators = ['^', '/', '*', '-', '+'];
-    // Check if operator, left, right, and nodeObj are all null
-    if (operator == null && left == null && right == null && nodeObj == null) {
-      throw new errors.MissingValue("Required variable(s) for Nodthis. Must use either operator, left, and right or nodeObj.");
-    }
-    // Check if operator, left, and right exist
-    else if (operator && left && right) {
-      this.operator = operator;
-      this.left = left;
-      this.right = right;
-      this.hasNegative = hasNegative;
+const errors = require('errors.js');
+const globals = require('globals.js');
+const Value = require('value.js');
+
+const operators = ['^', '*', '/', '+', '-']
+class Node {
+  constructor(nodeObj, hasNegative, left, operator, right) {
+    if (hasNegative && left && operator && right) {
+      this._hasNegative = hasNegative;
+      this._left = left;
+      this._operator = operator;
+      this._right = right;
+      if (nodeObj) {
+        this._nodeObj = nodeObj;
+      } else {
+        this._nodeObj = {
+          left: this._left,
+          operator: this._operator,
+          right: this._right
+        }
+      }
     } else if (nodeObj) {
-
-      // Try loading operator
-      if (!("operator" in nodeObj)) {
-        throw new errors.MissingValue("Required key for Nodthis. Must have \"operator\" in nodeObj.");
+      this._nodeObj = nodeObj;
+      if (typeof nodeObj.hasNegative === 'boolean') {
+        this._hasNegative = nodeObj.hasNegative;
       } else {
-        this.operator = nodeObj["operator"];
+        throw new errors.MissingValue("`hasNegative` property in a Node is missing.");
       }
-
-      // Try loading left
-      if (!("left" in nodeObj)) {
-        throw new errors.MissingValue("Required key for Nodthis. Must have \"left\" in nodeObj.");
+      if (nodeObj.left instanceof Value || nodeObj.left instanceof Node) {
+        this._left = nodeObj.left;
       } else {
-        this.left = nodeObj["left"];
+        throw new errors.MissingValue("`left` property in a Node is missing.");
       }
-
-      // Try loading right
-      if (!("right" in nodeObj)) {
-        throw new errors.MissingValue("Required key for Node. Must have \"right\" in nodeObj.");
+      if (nodeObj.operator) {
+        this._operator = nodeObj.operator;
       } else {
-        this.right = nodeObj["right"];
+        throw new errors.MissingValue("`operator` property in a Node is missing.");
       }
-
-      // Try loading hasNegative
-      if (!("hasNegative" in nodeObj)) {
-        this.hasNegative = hasNegative;
+      if (nodeObj.right instanceof Value || nodeObj.right instanceof Node) {
+        this._right = nodeObj.right;
       } else {
-        this.hasNegative = nodeObj["hasNegative"];
+        throw new errors.MissingValue("`right` property in a Node is missing.");
       }
+    } else {
+      throw new errors.MissingValue("No properties specified in a Value.");
     }
-
-    // Load left and right values as they should (Node | Float)
-    if (this.left instanceof Object) {
-      if ("value" in this.left) {
-        this.left = new Float(this.left);
-      } else {
-        this.left = new Node(this.left);
-      }
-    }
-    if (this.right instanceof Object) {
-      if ("value" in this.right) {
-        this.right = new Float(this.right);
-      } else {
-        this.right = new Node(this.right);
-      }
-    }
-
-    // Get 3-O Level
-    switch (this.operator) {
-      case '+':
-        this.level = 0;
-        break;
-      case '-':
-        this.level = 0;
-        break;
-      case '*':
-        this.level = 1;
-        break;
-      case '/':
-        this.level = 1;
-        break;
-      case '^':
-        this.level = 2;
-        break;
-    }
-  }
-
-  toString() {
-    let left = "" + this.getLeft();
-    let right = "" + this.getRight();
-
-    if (this.getLeft() instanceof Node && !this.getLeft()
-      .hasNegative()) {
-      left = "(" + left + ")";
-    }
-    if (this.getRight() instanceof Node && !this.getRight()
-      .hasNegative()) {
-      right = "(" + right + ")";
-    }
-
-    let operator = this.getOperator();
-
-    if (this.hasNegative()) {
-      return `-(${left} ${operator} ${right})`;
-    }
-
-    return `${left} ${operator} ${right}`;
-  }
-
-  compare(value) {
-    if (!(value instanceof LogicNode)) {
-      return false;
-    }
-
-    return (
-      this.getLeft()
-      .compare(valuthis.getLeft()) &&
-      this.getRight()
-      .compare(valuthis.getRight()) &&
-      this.getHasNegative() == valuthis.getHasNegative()
-    );
-  }
-
-  getOperator() {
-    return this.operators[this.operator];
-  }
-
-  getLeft() {
-    return this.left;
-  }
-
-  getRight() {
-    return this.left;
-  }
-
-  getHasNegative() {
-    return this.hasNegative;
-  }
-
-  rearrangeNodeObj() {
-    if (this.left instanceof Object) {
-      return {
-        left: this.left.left,
-        operator: this.left.operator,
-        right: {
-          left: this.left.right,
-          operator: this.operator,
-          right: this.right
-        }
-      }
-    } else if (this.right instanceof Object) {
-      return {
-        left: {
-          left: this.left,
-          operator: this.operator,
-          right: this.right.left
-        },
-        operator: this.right.operator,
-        right: this.right.right
-      }
-    }
-  }
-  evaluate() {
-    if (this.left instanceof Node) {
-      this.left = new Float(this.left.evaluate()
-        .value);
-    }
-    if (this.right instanceof Node) {
-      this.right = new Float(this.right.evaluate()
-        .value);
-    }
-    let left = this.left;
-    let right = this.right;
-    let value;
-    /*************/
-    switch (this.getOperator()) {
-      case '^':
-        if (this.hasNegative) {
-          value = -(left ** right);
-        }
-        value = left ** right;
-        break;
-      case '/':
-        if (this.hasNegative) {
-          value = -(left / right);
-        }
-        value = left / right;
-        break;
-      case '*':
-        if (this.hasNegative) {
-          value = -(left * right);
-        }
-        value = left * right;
-        break;
-      case '-':
-        if (this.hasNegative) {
-          value = -(left - right);
-        }
-        value = left - right;
-        break;
-      case '+':
-        if (this.hasNegative) {
-          value = -(left + right);
-        }
-        value = left + right;
-        break;
-      default:
-        throw new errors.operatorMismatch("Operators are invalid");
-    }
-    return {
-      expression: this + "",
-      node: this,
-      value
-    };
   }
 }

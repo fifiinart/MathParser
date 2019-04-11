@@ -25,7 +25,7 @@ module.exports = class Value {
         throw new errors.MissingValue("`hasNegative` property in a Value is missing.");
       }
     } else {
-      throw new errors.MissingValue("No properties specified in a Value.")
+      throw new errors.MissingValue("No properties specified in a Value.");
     }
   }
   get value() {
