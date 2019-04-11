@@ -34,4 +34,7 @@ module.exports = class Value {
   get hasNegative() {
     return this._hasNegative;
   }
+  toString() {
+    return String(this._value);
+  }
 }
