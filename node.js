@@ -2,8 +2,8 @@ const errors = require('errors.js');
 const globals = require('globals.js');
 const Value = require('value.js');
 
-const operators = ['^', '*', '/', '+', '-']
-class Node {
+const operators = ['^', '*', '/', '+', '-'];
+module.exports = class Node {
   constructor(nodeObj, hasNegative, left, operator, right) {
     if (hasNegative && left && operator && right) {
       this._hasNegative = hasNegative;
