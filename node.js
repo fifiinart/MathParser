@@ -57,4 +57,48 @@ class Node {
   get right() {
     return this._right;
   }
+  eval() {
+    let left, right, operator = this._operator,
+      val;
+    if (this._left instanceof Node) {
+      left = this._left.eval();
+    } else {
+      left = this._left;
+    }
+
+    if (this._right instanceof Node) {
+      right = this._right.eval();
+    } else {
+      right = this._right;
+    }
+
+    switch (operator) {
+      case '^':
+        val = left.value ** right.value;
+        break;
+
+      case '*':
+        val = left.value * right.value;
+        break;
+
+      case '/':
+        val = left.value / right.value;
+        break;
+
+      case '+':
+        val = left.value + right.value;
+        break;
+
+      case '-':
+        val = left.value - right.value;
+        break;
+      default:
+        throw new errors.MissingValue("Invalid `operator` in a Node.");
+    }
+
+    return new Value({
+      value: val,
+      hasNegative: val < 0
+    });
+  }
 }
