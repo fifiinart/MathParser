@@ -45,4 +45,16 @@ class Node {
       throw new errors.MissingValue("No properties specified in a Value.");
     }
   }
+  get hasNegative() {
+    return this._hasNegative;
+  }
+  get left() {
+    return this._left;
+  }
+  get operator() {
+    return this._operator;
+  }
+  get right() {
+    return this._right;
+  }
 }
