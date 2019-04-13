@@ -19,7 +19,7 @@ module.exports = class Value {
       } else {
         throw new errors.MissingValue("`value` property in a Value is missing.");
       }
-      if (this._valueObj.hasNegative) {
+      if (this._valueObj.hasNegative != undefined) {
         this._hasNegative = this._valueObj.hasNegative;
       } else {
         throw new errors.MissingValue("`hasNegative` property in a Value is missing.");

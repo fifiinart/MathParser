@@ -1,6 +1,6 @@
-const errors = require('errors.js');
-const globals = require('globals.js');
-const Value = require('value.js');
+const errors = require('./errors.js');
+const globals = require('./globals.js');
+const Value = require('./value.js');
 
 const operators = ['^', '*', '/', '+', '-'];
 module.exports = class Node {
