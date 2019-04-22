@@ -1,5 +1,5 @@
 const errors = require('./errors.js');
-module.exports = class Value {
+exports = module.exports = class Value {
   constructor(valueObj, value, hasNegative) {
     if (value && hasNegative) {
       this._value = value;

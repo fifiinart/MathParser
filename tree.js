@@ -36,3 +36,7 @@ module.exports = class Tree {
     this._exp = "" + this.root;
   }
 }
+
+function parseExpression(expression) {
+  return;
+}
